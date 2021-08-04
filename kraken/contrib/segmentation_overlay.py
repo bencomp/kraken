@@ -15,6 +15,7 @@ cmap = cycle([(230, 25, 75, 127),
 
 bmap = (0, 130, 200, 255)
 
+anchormap = cycle(['lt', 'rt', 'lb', 'rb'])
 
 
 def slugify(value):
@@ -95,14 +96,30 @@ def cli(format_type, model, repolygonize, files):
             for t, regs in data['regions'].items():
                 tmp = Image.new('RGBA', im.size, (0, 0, 0, 0))
                 draw = ImageDraw.Draw(tmp)
-                for reg in regs:
+                for idx, reg in enumerate(regs):
                     c = next(cmap)
+                    anchor = next(anchormap)
                     try:
                         draw.polygon(reg, fill=c, outline=c[:3])
+                        for point_id, point in enumerate(reg):
+                            draw.text((point[0], point[1] + 4*idx), '{}.{}'.format(idx, point_id), fill=(0, 0, 0, 255), anchor=anchor)
                     except Exception:
                         pass
                 base_image = Image.alpha_composite(im, tmp)
                 base_image.save(f'high_{os.path.basename(doc)}_regions_{slugify(t)}.png')
+            for t, regs in data['regions'].items():
+                for idx, reg in enumerate(regs):
+                    tmp = Image.new('RGBA', im.size, (0, 0, 0, 0))
+                    draw = ImageDraw.Draw(tmp)
+                    c = next(cmap)
+                    try:
+                        draw.polygon(reg, fill=c, outline=c[:3])
+                        for point_id, point in enumerate(reg[:-1]):
+                            draw.text((point[0], point[1]), '{}.{}'.format(idx, point_id), fill=(0, 0, 0, 255))
+                    except Exception:
+                        pass
+                    base_image = Image.alpha_composite(im, tmp)
+                    base_image.save(f'high_{os.path.basename(doc)}_regions_{slugify(t)}_{idx}.png')
             click.secho('\u2713', fg='green')
     else:
         net = vgsl.TorchVGSLModel.load_model(model)
