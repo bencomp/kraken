@@ -7,26 +7,32 @@ source:
 
 requirements:
   build:
-     - python==3.6.6
+     - python>=3.7
      - setuptools
      - pbr
   run:
-     - python==3.6.6
+     - python>=3.7
      - python-bidi
      - lxml
      - future
      - regex
      - requests
      - click>=7.0
-     - numpy
-     - pillow
+     - numpy=1.19.5
+     - pillow>=6.2.2
      - scipy
-     - protobuf>=3.0.0
+     - protobuf>=3.0
      - jinja2
-     - torchvision
-     - pytorch-cpu>=1.0.0
+     - torchvision-cpu=0.9.0
+     - cpuonly
+     - pytorch=1.8.0
      - jsonschema
-     - coremltools
+     - scikit-image<=0.17.2
+     - shapely
+     - pip
+     - imagemagick
+     - coremltools>=3.3
+     - pyvips
 
 about:
   home: http://kraken.re
